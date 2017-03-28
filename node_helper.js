@@ -578,14 +578,24 @@ module.exports = NodeHelper.create({
 			});
 			return true;
 		}
-		if (query.action === "MONITORON")
+		if (query.action === "MONITORON" || query.action === "SOMEBODYHOME" )
 		{
 			exec("tvservice --preferred && sudo chvt 6 && sudo chvt 7", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
-			return true;
+                        if(query.action === "MONITORON" )
+                        { 
+                            payload = { payload : 0, notification : "MONITORON"};	
+                            self.sendSocketNotification("NOTIFICATION",payload);
+                        }
+                        return true;
 		}
-		if (query.action === "MONITOROFF")
+		if (query.action === "MONITOROFF" || query.action === "NOBODYHOME")
 		{
 			exec("tvservice -o", opts, function(error, stdout, stderr){ self.checkForExecError(error, stdout, stderr, res); });
+                        if(query.action === "MONITOROFF") 
+                        { 
+                            payload = { payload : 0, notification : "MONITOROFF"};	
+                            self.sendSocketNotification("NOTIFICATION",payload);
+                        }
 			return true;
 		}
 		if (query.action === "HIDE" || query.action === "SHOW")
